@@ -37,16 +37,7 @@ module.exports.createUser = (req, res) => {
 
   User.create({ name, about, avatar })
     .then((user) => res.status(ERR_STATUS_CREATED_201).send(user))
-    .catch((err) => {
-      if (err instanceof DocumentNotFoundError) {
-        res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id пользователь  не найден' });
-      }
-      if (err instanceof ValidationError) {
-        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при создании пользователя' });
-      } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
-      }
-    });
+    .catch((err) => console.log(err));
 };
 
 module.exports.updateProfile = (req, res) => {
