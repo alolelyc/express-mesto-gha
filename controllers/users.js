@@ -80,9 +80,6 @@ module.exports.updateAvatar = (req, res) => {
     .catch((err) => {
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректный id пользователя' });
-      }
-      if (err instanceof ValidationError) {
-        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при обновлении пользователя' });
       } else {
         res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
       }
