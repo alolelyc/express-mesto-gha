@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const cards = require('./routes/cards');
 const users = require('./routes/users');
-const ERR_STATUS_NOT_FOUND_404 = require('./utils/constants');
+const { ERR_STATUS_NOT_FOUND_404 } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 const app = express();
