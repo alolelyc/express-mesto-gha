@@ -23,6 +23,7 @@ module.exports.getUserId = (req, res) => {
     .catch((err) => {
       if (err instanceof DocumentNotFoundError) {
         res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id пользователь  не найден' });
+        return;
       }
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Id пользователя передан некорректно' });
@@ -57,9 +58,11 @@ module.exports.updateProfile = (req, res) => {
     .catch((err) => {
       if (err instanceof DocumentNotFoundError) {
         res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'Запрашиваемый пользователь не найден' });
+        return;
       }
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректный id пользователя' });
+        return;
       }
       if (err instanceof ValidationError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при обновлении пользователя' });

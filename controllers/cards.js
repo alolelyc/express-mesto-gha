@@ -35,6 +35,7 @@ module.exports.delCardById = (req, res) => {
     .catch((err) => {
       if (err instanceof DocumentNotFoundError) {
         res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id карточка не найдена' });
+        return;
       }
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Id пользователя передан некорректно' });
@@ -55,6 +56,7 @@ module.exports.likeCard = (req, res) => {
     .catch((err) => {
       if (err instanceof DocumentNotFoundError) {
         res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id карточка не найдена' });
+        return;
       }
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Данные для установки likes переданы некорректно' });
@@ -75,6 +77,7 @@ module.exports.disLikeCard = (req, res) => {
     .catch((err) => {
       if (err instanceof DocumentNotFoundError) {
         res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id карточка не найдена' });
+        return;
       }
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Данные для установки likes переданы некорректно' });
