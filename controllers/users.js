@@ -77,5 +77,14 @@ module.exports.updateAvatar = (req, res) => {
   })
     .orFail()
     .then((user) => res.send(user))
-    .catch((err) => res.status(ERR_STATUS_NOT_FOUND_404).send({ message: `Произошла ошибка: ${err.name} ${err.message}` }));
+    .catch((err) => {
+      if (err instanceof CastError) {
+        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректный id пользователя' });
+      }
+      if (err instanceof ValidationError) {
+        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при обновлении пользователя' });
+      } else {
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+      }
+    });
 };
