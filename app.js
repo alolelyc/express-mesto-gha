@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const cards = require('./routes/cards');
 const users = require('./routes/users');
+const { ERR_STATUS_NOT_FOUND_404 } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -14,6 +15,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use('*', (req, res) => {
+  res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'Данный URL не существует' });
+});
 
 app.use((req, res, next) => {
   req.user = {
