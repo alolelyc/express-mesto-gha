@@ -38,9 +38,6 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(ERR_STATUS_CREATED_201).send(user))
     .catch((err) => {
-      if (err instanceof CastError) {
-        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные пользователя' });
-      }
       if (err instanceof ValidationError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при создании пользователя' });
       } else {
