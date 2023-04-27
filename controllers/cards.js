@@ -10,7 +10,7 @@ const {
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` }));
+    .catch((err) => res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -21,7 +21,7 @@ module.exports.createCard = (req, res) => {
       if (err instanceof ValidationError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при создании новой карточки' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };
@@ -40,7 +40,7 @@ module.exports.delCardById = (req, res) => {
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Id пользователя передан некорректно' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };
@@ -61,7 +61,7 @@ module.exports.likeCard = (req, res) => {
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Данные для установки likes переданы некорректно' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };
@@ -82,7 +82,7 @@ module.exports.disLikeCard = (req, res) => {
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Данные для установки likes переданы некорректно' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };

@@ -11,7 +11,7 @@ const {
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch((err) => res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` }));
+    .catch((err) => res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` }));
 };
 
 module.exports.getUserId = (req, res) => {
@@ -28,7 +28,7 @@ module.exports.getUserId = (req, res) => {
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Id пользователя передан некорректно' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };
@@ -42,7 +42,7 @@ module.exports.createUser = (req, res) => {
       if (err instanceof ValidationError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при создании пользователя' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };
@@ -67,7 +67,7 @@ module.exports.updateProfile = (req, res) => {
       if (err instanceof ValidationError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при обновлении пользователя' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };
@@ -84,7 +84,7 @@ module.exports.updateAvatar = (req, res) => {
       if (err instanceof CastError) {
         res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректный id пользователя' });
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
+        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
       }
     });
 };
