@@ -19,6 +19,7 @@ module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
+    .then((card) => card.populate('owner'))
     .then((card) => res.status(ERR_STATUS_CREATED_201).send(card))
     .catch((err) => {
       if (err instanceof ValidationError) {
@@ -31,10 +32,10 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.delCardById = (req, res, next) => {
   const { cardId } = req.params;
-
+  const { _id } = req.user;
   Card.findById(cardId)
     .then((card) => {
-      if (card.owner.toString() !== req.user._id) {
+      if (card.owner.toString() !== _id) {
         next(new ForbiddenError('У Вас отстутствуют права на удаление этой карточки'));
       } else {
         Card.findByIdAndRemove(cardId)

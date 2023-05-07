@@ -1,5 +1,5 @@
 const { celebrate, Joi } = require('celebrate');
-const { regex } = require('../../utils/constants');
+const { REGEX } = require('../../utils/constants');
 
 const validationLogin = celebrate({
   body: Joi.object().keys({
@@ -12,7 +12,7 @@ const validationCreateUser = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(regex),
+    avatar: Joi.string().regex(REGEX),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
@@ -33,7 +33,7 @@ const validationUpdateProfile = celebrate({
 
 const validationUpdateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(regex),
+    avatar: Joi.string().regex(REGEX),
   }),
 });
 
