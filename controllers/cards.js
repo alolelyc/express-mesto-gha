@@ -1,4 +1,4 @@
-const { ValidationError, DocumentNotFoundError, CastError } = require('mongoose').Error;
+const { ValidationError, CastError } = require('mongoose').Error;
 const Card = require('../models/card');
 const BadRequestError = require('../errors/BadRequest400');
 const NotFoundError = require('../errors/NotFoundError404');
@@ -35,18 +35,16 @@ module.exports.delCardById = (req, res, next) => {
   const { _id } = req.user;
   Card.findById(cardId)
     .then((card) => {
+      if (!card) {
+        next(new NotFoundError('По указанному id карточка не найдена'));
+      }
       if (card.owner.toString() !== _id) {
         next(new ForbiddenError('У Вас отстутствуют права на удаление этой карточки'));
-      } else {
-        Card.findByIdAndRemove(cardId)
-          .then(() => res.send(card));
       }
+      return Card.findByIdAndRemove(cardId)
+        .then(() => res.send(card));
     })
     .catch((err) => {
-      if (err instanceof DocumentNotFoundError) {
-        next(new NotFoundError('По указанному id карточка не найдена'));
-        return;
-      }
       if (err instanceof CastError) {
         next(new BadRequestError('Id пользователя передан некорректно'));
       } else {
