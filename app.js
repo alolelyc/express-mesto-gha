@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const cards = require('./routes/cards');
 const users = require('./routes/users');
 const { createUser, login } = require('./controllers/users');
@@ -35,6 +36,7 @@ app.use('*', auth, (req, res, next) => {
 });
 
 app.use(handlerCentrError);
+app.use(errors());
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
