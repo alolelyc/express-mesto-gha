@@ -35,8 +35,8 @@ app.use('*', auth, (req, res, next) => {
   next(new NotFoundError('Данный URL не существует'));
 });
 
-app.use(handlerCentrError);
 app.use(errors());
+app.use(handlerCentrError);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
