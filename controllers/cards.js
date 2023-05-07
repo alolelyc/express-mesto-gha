@@ -1,88 +1,97 @@
 const { ValidationError, DocumentNotFoundError, CastError } = require('mongoose').Error;
 const Card = require('../models/card');
+const BadRequestError = require('../errors/BadRequest400');
+const NotFoundError = require('../errors/NotFoundError404');
+const ForbiddenError = require('../errors/ForbiddenError403');
+
 const {
   ERR_STATUS_CREATED_201,
-  ERR_STATUS_BAD_REQUEST_400,
-  ERR_STATUS_NOT_FOUND_404,
-  ERR_STATUS_INTERNAL_SERVER_500,
+
 } = require('../utils/constants');
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send(cards))
-    .catch((err) => res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` }));
+    .catch(next);
 };
 
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
-  Card.create({ name, link, owner: req.user._id })
+  const owner = req.user._id;
+  Card.create({ name, link, owner })
     .then((card) => res.status(ERR_STATUS_CREATED_201).send(card))
     .catch((err) => {
       if (err instanceof ValidationError) {
-        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Некорректные данные при создании новой карточки' });
+        next(new BadRequestError('Некорректные данные при создании новой карточки'));
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
+        next(err);
       }
     });
 };
 
-module.exports.delCardById = (req, res) => {
+module.exports.delCardById = (req, res, next) => {
   const { cardId } = req.params;
 
-  Card.findByIdAndRemove(cardId)
-    .orFail()
-    .then((card) => res.send(card))
+  Card.findById(cardId)
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        next(new ForbiddenError('У Вас отстутствуют права на удаление этой карточки'));
+      } else {
+        Card.findByIdAndRemove(cardId)
+          .then(() => res.send(card));
+      }
+    })
     .catch((err) => {
       if (err instanceof DocumentNotFoundError) {
-        res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id карточка не найдена' });
+        next(new NotFoundError('По указанному id карточка не найдена'));
         return;
       }
       if (err instanceof CastError) {
-        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Id пользователя передан некорректно' });
+        next(new BadRequestError('Id пользователя передан некорректно'));
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
+        next(err);
       }
     });
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
-    .orFail()
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err instanceof DocumentNotFoundError) {
-        res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id карточка не найдена' });
-        return;
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('По указанному id карточка не найдена');
       }
+      res.send(card);
+    })
+    .catch((err) => {
       if (err instanceof CastError) {
-        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Данные для установки likes переданы некорректно' });
+        next(new BadRequestError('Данные для установки likes переданы некорректно'));
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
+        next(err);
       }
     });
 };
 
-module.exports.disLikeCard = (req, res) => {
+module.exports.disLikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
-    .orFail()
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err instanceof DocumentNotFoundError) {
-        res.status(ERR_STATUS_NOT_FOUND_404).send({ message: 'По указанному id карточка не найдена' });
-        return;
+    .then((card) => {
+      if (!card) {
+        throw new NotFoundError('По указанному id карточка не найдена');
       }
+      res.send(card);
+    })
+    .catch((err) => {
       if (err instanceof CastError) {
-        res.status(ERR_STATUS_BAD_REQUEST_400).send({ message: 'Данные для установки likes переданы некорректно' });
+        next(new BadRequestError('Данные для установки likes переданы некорректно'));
       } else {
-        res.status(ERR_STATUS_INTERNAL_SERVER_500).send({ message: `На сервере произошла ошибка: ${err.name} ${err.message}` });
+        next(err);
       }
     });
 };
