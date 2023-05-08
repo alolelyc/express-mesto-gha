@@ -26,14 +26,14 @@ const validationUserId = celebrate({
 
 const validationUpdateProfile = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name: Joi.string().required().min(2).max(30),
+    about: Joi.string().required().min(2).max(30),
   }),
 });
 
 const validationUpdateAvatar = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(REGEX),
+    avatar: Joi.string().required().regex(REGEX),
   }),
 });
 

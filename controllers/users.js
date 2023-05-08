@@ -98,10 +98,6 @@ module.exports.updateProfile = (req, res, next) => {
         next(new NotFoundError('Запрашиваемый пользователь не найден'));
         return;
       }
-      if (err instanceof CastError) {
-        next(new BadRequestError('Некорректный id пользователя'));
-        return;
-      }
       if (err instanceof ValidationError) {
         next(new BadRequestError('Некорректные данные при обновлении пользователя'));
       } else {
